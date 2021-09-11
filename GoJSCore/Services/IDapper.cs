@@ -11,11 +11,11 @@ namespace GoJSCore.Services
     public interface IDapper : IDisposable
     {
         DbConnection GetDbconnection();
-        T Get<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
-        List<T> GetAll<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
+        T Get<T>(long id) where T : class;
+        List<T> GetAll<T>(string sp, object parms = null, CommandType commandType = CommandType.StoredProcedure);
         int Execute(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
-        long Insert<T>(T model) where T : class;
-        bool Update<T>(T model) where T : class;
+        Task<int> Insert<T>(T model) where T : class;
+        Task<bool> Update<T>(T model) where T : class;
         //T Insert<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
         //T Update<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
     }

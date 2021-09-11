@@ -59,12 +59,12 @@
         <!-- * * * * * * * * * * * * * -->
         <!-- Start of GoJS sample code -->
         <script src="~/js/release/go.js"></script>
-
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <div class="p-4 w-full">
             <script src="~/js/extensions/Figures.js"></script>
             <script src="~/js/extensions/DrawCommandHandler.js"></script>
             <script id="code">
-            function init() {
+                function init() {
                     var $ = go.GraphObject.make;
 
                     myDiagram =
@@ -588,6 +588,40 @@
                     document.getElementById("mySavedModel").value = myDiagram.model.toJson();
                     myDiagram.isModified = false;
                 }
+                function saveDB() {
+                    $('#mySavedModel').val( myDiagram.model.toJson());
+                  //  var model = { ID: 0, JSON: JSON.stringify($('#mySavedModel').val()) };
+                    var model = { ID: 0, JSON: $('#mySavedModel').val() };
+                    //$.post("./GOApi/Create", model, function (data) {
+                    //    $(".result").html(data);
+                    //});
+                    $.ajax({
+                        type: "POST",
+                        url: "./GOApi/Create",
+                        data: model,
+                        success: function (response) {
+                            alert(data);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                 
+                }
+                function loadDB() {
+                    var url = "./GOApi/GetById/";
+                    /* myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);*/
+                    var id = $('#load').val();
+                    $.get(url + id, function (data) {
+                       
+                        myDiagram.model = go.Model.fromJson(JSON.parse(data.json));
+                        document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+                      //  alert(JSON.stringify(data.json));
+                    });
+                }
                 function load() {
                     myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
                 }
@@ -607,10 +641,14 @@
                     Use the context menu to change the color, thickness, dashed-ness, and which side the link should connect with.
                     Press the F2 key to start editing the label of a selected link.
                 </p>
+                <div>
+                    <input id="load" type="text"/>
+                </div>
                 <div id="buttons">
                     <button id="loadModel" onclick="load()">Load</button>
                     <button id="saveModel" onclick="save()">Save</button>
-                    <button id="saveModel" onclick="saveDB()">Save</button>
+                    <button id="loadModelDB" onclick="loadDB()">Load DB</button>
+                    <button id="saveDB" onclick="saveDB()">Save DB</button>
                 </div>
                 <textarea id="mySavedModel" style="width:100%;height:300px">
 { "class": "GraphLinksModel",

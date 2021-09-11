@@ -9,7 +9,8 @@ namespace GoJSCore.Models
     [Table("PLC")]
     public class PLCModel
     {
+        [Key]
         public int ID { set; get; }
         public string JSON { set; get; }
-}
+    }
 }

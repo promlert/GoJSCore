@@ -29,36 +29,40 @@ namespace GoJSCore.Services
         {
             throw new NotImplementedException();
         }
-
-        public T Get<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.Text)
+        public T Get<T>(long id) where T : class
         {
-            using IDbConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring));
-            return db.Query<T>(sp, parms, commandType: commandType).FirstOrDefault();
+            using (SqlConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring)))
+            {
+                return db.Get<T>(id);
+            }
         }
 
-        public List<T> GetAll<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure)
+
+        public List<T> GetAll<T>(string sp, object parms = null, CommandType commandType = CommandType.StoredProcedure)
         {
             using IDbConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring));
-            return db.Query<T>(sp, parms, commandType: commandType).ToList();
+            return db.Query<T>(sp, parms, null, true, null, commandType).ToList();
         }
 
         public DbConnection GetDbconnection()
         {
             return new SqlConnection(_config.GetConnectionString(Connectionstring));
         }
-        public long Insert<T>(T model) where T : class
+        public Task<int> Insert<T>(T model) where T : class
         {
-            using (SqlConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring)))
-            {
-                return db.Insert<T>(model);
-            }
+            SqlConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring));
+
+            db.Open();
+            return db.InsertAsync<T>(model);
+
         }
-        public bool Update<T>(T model) where T : class
+        public Task<bool> Update<T>(T model) where T : class
         {
-            using (SqlConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring)))
-            {
-                return db.Update<T>(model);
-            }
+            SqlConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring));
+
+            db.Open();
+            return db.UpdateAsync<T>(model);
+
         }
-     }
+    }
 }
