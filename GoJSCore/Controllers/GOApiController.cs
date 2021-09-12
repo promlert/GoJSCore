@@ -9,12 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GoJSCore.Controllers
-{ 
+{
     [ApiController]
     [Route("[controller]")]
     public class GOApiController : ControllerBase
     {
-
         private static readonly string[] Summaries = new[]
      {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -25,11 +24,7 @@ namespace GoJSCore.Controllers
         {
             _dapper = dapper;
         }
-        //public GOApiController(ILogger<GOApiController> logger)
-        //{
-        //    _logger = logger;
-        //}
-
+   
         [HttpPost(nameof(Create))]
         public async Task<int> Create([FromForm] PLCModel data)
         {
